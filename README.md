@@ -7,6 +7,7 @@ A collection of practical Visual Studio Code extensions for debugging, data anal
 | Extension | Description | Status |
 |---|---|---|
 | DataFrame Viewer | Open pandas and Polars dataframes directly from the editor while debugging. Supports the native Data Viewer and moving it into a new VS Code window. | In development |
+| Universal Git Repository Manager | Discover, browse, edit, and manage selected Git repositories from a dedicated sidebar, including VS Code Source Control integration. | In development |
 | Debug Tools | Helpful commands and shortcuts for debugging workflows. | Planned |
 | CSV Tools | Tools for inspecting and working with CSV files. | Planned |
 
@@ -20,6 +21,10 @@ While paused in a Python debug session:
 4. Or select **Open in Data Viewer — New Window**.
 
 The extension is designed for Python debugging in local and WSL environments.
+
+## Universal Git Repository Manager
+
+Open `extensions/universal-git-manager` and package it with `npx @vscode/vsce package`. Install the generated VSIX, open **Git Repositories** in the Activity Bar, configure a root such as `C:\o9Git\`, and select repositories. Selected repositories are registered with VS Code's built-in Source Control without changing the current workspace.
 
 ## Installation
 

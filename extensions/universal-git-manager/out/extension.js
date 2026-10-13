@@ -104,7 +104,7 @@ async function activate(context) {
     };
     const configureRoot = async () => {
         const config = vscode.workspace.getConfiguration('universalGitManager');
-        const input = await vscode.window.showInputBox({ title: 'Universal Git Manager: Repository Root', prompt: 'Enter a Git repository root (for example C:\\o9Git or /mnt/c/o9Git)', value: config.get('rootPath', '') || 'C:\\o9Git', ignoreFocusOut: true });
+        const input = await vscode.window.showInputBox({ title: 'Universal Git Manager: Repository Root', prompt: 'Enter the folder that contains your Git repositories', placeHolder: 'For example: C:\\Repositories or /home/you/projects', value: config.get('rootPath', ''), ignoreFocusOut: true });
         if (input === undefined)
             return;
         await config.update('rootPath', input.trim(), vscode.ConfigurationTarget.Global);
@@ -177,7 +177,16 @@ async function activate(context) {
     } });
     register('universalGitManager.gitFetch', (item) => confirmGit(item.repository, ['fetch'], 'Git Fetch'));
     register('universalGitManager.gitPull', (item) => confirmGit(item.repository, ['pull'], 'Git Pull'));
-    if (vscode.workspace.getConfiguration('universalGitManager').get('autoDiscoverOnStartup', false))
+    // A new installation has no root configured. Prompt when its view first activates so
+    // discovery is based on the user's own repository folder rather than a hardcoded path.
+    if (!getRoot()) {
+        await configureRoot();
+        if (getRoot())
+            await fetchRepositories();
+        else
+            refreshViews();
+    }
+    else if (vscode.workspace.getConfiguration('universalGitManager').get('autoDiscoverOnStartup', false))
         await fetchRepositories();
     else
         refreshViews();

@@ -8,10 +8,10 @@ From this directory run `pnpm install` and `pnpm package`, then install the gene
 
 ## Usage
 
-Open **Git Repositories**, click **Fetch Repositories**, and configure `C:\o9Git\`. The default repositories `DemandPlanningPlugins` and `o9ReferencePackage` are selected when found. Selecting or deselecting a repository synchronizes it with the built-in Source Control view.
+Open **Git Repositories**. On first use, the extension asks for the folder that contains your Git repositories, then discovers repositories below that folder. Selecting or deselecting a repository synchronizes it with the built-in Source Control view. You can change the folder later with **Universal Git Manager: Configure Repository Root**.
 
 Discovery is local-only and never performs Git network operations. `Git Fetch` and `Git Pull` are explicit, confirmed commands. The normal workspace is untouched unless **Add Repository to Workspace** is chosen.
 
 ## WSL
 
-When running in Remote WSL, `C:\o9Git\` is converted to `/mnt/c/o9Git/`. Set `universalGitManager.wslRootPath` when your mount differs. Settings and selections are stored globally in the extension host.
+When running in Remote WSL, Windows paths such as `C:\Repositories` are converted to `/mnt/c/Repositories/`. Set `universalGitManager.wslRootPath` when your mount differs. Settings and selections are stored globally in the extension host.

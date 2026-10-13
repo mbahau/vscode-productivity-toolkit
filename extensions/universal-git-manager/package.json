@@ -2,7 +2,7 @@
   "name": "universal-git-repository-manager",
   "displayName": "Universal Git Repository Manager",
   "description": "Browse, edit, and manage selected external Git repositories from a dedicated VS Code sidebar.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "mbahau",
   "license": "MIT",
   "engines": { "vscode": "^1.90.0" },
@@ -13,7 +13,7 @@
     "configuration": { "title": "Universal Git Manager", "properties": {
       "universalGitManager.rootPath": { "type": "string", "default": "", "description": "Git repository root. Windows paths are converted for Remote WSL when possible." },
       "universalGitManager.wslRootPath": { "type": "string", "default": "", "description": "Optional WSL override for rootPath." },
-      "universalGitManager.defaultRepositories": { "type": "array", "default": ["DemandPlanningPlugins", "o9ReferencePackage"], "items": { "type": "string" } },
+      "universalGitManager.defaultRepositories": { "type": "array", "default": [], "items": { "type": "string" }, "description": "Repository names to select automatically during the first discovery." },
       "universalGitManager.autoDiscoverOnStartup": { "type": "boolean", "default": false },
       "universalGitManager.restoreSelections": { "type": "boolean", "default": true },
       "universalGitManager.scanDepth": { "type": "number", "default": 1, "minimum": 1, "maximum": 5 }

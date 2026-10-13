@@ -1,0 +1,59 @@
+{
+  "name": "debug-dataframe-viewer",
+  "displayName": "Debug DataFrame Viewer",
+  "description": "Open pandas or Polars dataframes directly from the editor while debugging.",
+  "version": "0.0.14",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:debugDataframeViewer.open",
+    "onCommand:debugDataframeViewer.openNew"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "debugDataframeViewer.open",
+        "title": "Open in Data Viewer",
+        "enablement": "inDebugMode && editorLangId == python"
+      },
+      {
+        "command": "debugDataframeViewer.openNew",
+        "title": "Open in Data Viewer — New Window",
+        "enablement": "inDebugMode && editorLangId == python"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "debugDataframeViewer.open",
+          "when": "editorLangId == python && inDebugMode",
+          "group": "navigation@1"
+        },
+        {
+          "command": "debugDataframeViewer.openNew",
+          "when": "editorLangId == python && inDebugMode",
+          "group": "navigation@1.01"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Debug DataFrame Viewer",
+      "properties": {
+        "debugDataframeViewer.maxRows": {
+          "type": "number",
+          "default": 500,
+          "minimum": 1,
+          "maximum": 5000,
+          "description": "Maximum number of dataframe rows loaded into the viewer."
+        }
+      }
+    }
+  }
+}

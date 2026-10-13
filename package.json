@@ -1,0 +1,8 @@
+{
+  "name": "vscode-productivity-toolkit",
+  "private": true,
+  "scripts": {
+    "package:all": "pnpm -r package",
+    "test": "pnpm -r test"
+  }
+}

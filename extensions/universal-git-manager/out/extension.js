@@ -146,8 +146,9 @@ async function activate(context) {
         vscode.window.showErrorMessage(`${label} failed: ${e instanceof Error ? e.message : String(e)}`);
     } };
     const register = (command, fn) => context.subscriptions.push(vscode.commands.registerCommand(command, fn));
-    register('universalGitManager.setup', configureRoot);
-    register('universalGitManager.configureRoot', configureRoot);
+    const configureRootAndFetch = async () => { if (await configureRoot()) await fetchRepositories(); };
+    register('universalGitManager.setup', configureRootAndFetch);
+    register('universalGitManager.configureRoot', configureRootAndFetch);
     register('universalGitManager.fetch', fetchRepositories);
     register('universalGitManager.refresh', fetchRepositories);
     register('universalGitManager.enableSourceControl', () => enableSourceControl(repositories.filter(r => selected.has(r.path))));

@@ -8,7 +8,7 @@ From this directory run `pnpm install` and `pnpm package`, then install the gene
 
 ## Usage
 
-Open **Git Repositories**. On first use, the extension asks for the folder that contains your Git repositories, then discovers repositories below that folder. If a root is already configured, it is shown as the starting value and can be changed. Selecting or deselecting a repository synchronizes it with the built-in Source Control view. You can change the folder later with **Universal Git Manager: Configure Repository Root**.
+Open **Git Repositories**. On first use, the extension asks for the folder that contains your Git repositories, then discovers repositories below that folder. If a root is already configured, it is shown as the starting value and can be changed. Use the gear button in the Available Repositories title bar to change the folder later; discovery runs again after you save it. You can also run **Universal Git Manager: Configure Repository Root** from the Command Palette.
 
 Discovery is local-only and never performs Git network operations. `Git Fetch` and `Git Pull` are explicit, confirmed commands. The normal workspace is untouched unless **Add Repository to Workspace** is chosen.
 

@@ -43,6 +43,7 @@ const pathUtils_1 = require("./pathUtils");
 const views_1 = require("./views");
 const STATE_SELECTIONS = 'selectedRepositoryPaths';
 const STATE_INITIALIZED = 'defaultsInitialized';
+const STATE_ROOT_PROMPTED = 'repositoryRootPrompted';
 let repositories = [];
 let selected = new Set();
 async function activate(context) {
@@ -106,10 +107,11 @@ async function activate(context) {
         const config = vscode.workspace.getConfiguration('universalGitManager');
         const input = await vscode.window.showInputBox({ title: 'Universal Git Manager: Repository Root', prompt: 'Enter the folder that contains your Git repositories', placeHolder: 'For example: C:\\Repositories or /home/you/projects', value: config.get('rootPath', ''), ignoreFocusOut: true });
         if (input === undefined)
-            return;
+            return false;
         await config.update('rootPath', input.trim(), vscode.ConfigurationTarget.Global);
         if (vscode.env.remoteName === 'wsl' && /^[a-z]:[\\/]/i.test(input.trim()))
             vscode.window.showInformationMessage('Windows root will be mapped to /mnt/<drive>/ automatically. Set universalGitManager.wslRootPath if your mount differs.');
+        return true;
     };
     const fetchRepositories = async () => {
         const root = await ensureRoot();
@@ -179,9 +181,17 @@ async function activate(context) {
     register('universalGitManager.gitPull', (item) => confirmGit(item.repository, ['pull'], 'Git Pull'));
     // A new installation has no root configured. Prompt when its view first activates so
     // discovery is based on the user's own repository folder rather than a hardcoded path.
-    if (!getRoot()) {
-        await configureRoot();
-        if (getRoot())
+    if (!context.globalState.get(STATE_ROOT_PROMPTED, false)) {
+        const configured = await configureRoot();
+        if (configured)
+            await context.globalState.update(STATE_ROOT_PROMPTED, true);
+        if (configured && getRoot())
+            await fetchRepositories();
+        else
+            refreshViews();
+    }
+    else if (!getRoot()) {
+        if (await configureRoot())
             await fetchRepositories();
         else
             refreshViews();

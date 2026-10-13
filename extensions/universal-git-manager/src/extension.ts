@@ -7,6 +7,7 @@ import { FileItem, FilesProvider, RepoItem, RepositoriesProvider } from './views
 
 const STATE_SELECTIONS = 'selectedRepositoryPaths';
 const STATE_INITIALIZED = 'defaultsInitialized';
+const STATE_ROOT_PROMPTED = 'repositoryRootPrompted';
 let repositories: Repository[] = [];
 let selected = new Set<string>();
 type GitApi = { repositories: Array<{ rootUri: vscode.Uri }>; openRepository(uri: vscode.Uri): unknown; close(repository: unknown): unknown };
@@ -42,12 +43,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     try { if (!(await fs.stat(root)).isDirectory()) throw new Error('Not a directory'); } catch { vscode.window.showErrorMessage(`Universal Git Manager: repository root is unavailable: ${root}`); return undefined; }
     return root;
   };
-  const configureRoot = async () => {
+  const configureRoot = async (): Promise<boolean> => {
     const config = vscode.workspace.getConfiguration('universalGitManager');
     const input = await vscode.window.showInputBox({ title: 'Universal Git Manager: Repository Root', prompt: 'Enter the folder that contains your Git repositories', placeHolder: 'For example: C:\\Repositories or /home/you/projects', value: config.get<string>('rootPath', ''), ignoreFocusOut: true });
-    if (input === undefined) return;
+    if (input === undefined) return false;
     await config.update('rootPath', input.trim(), vscode.ConfigurationTarget.Global);
     if (vscode.env.remoteName === 'wsl' && /^[a-z]:[\\/]/i.test(input.trim())) vscode.window.showInformationMessage('Windows root will be mapped to /mnt/<drive>/ automatically. Set universalGitManager.wslRootPath if your mount differs.');
+    return true;
   };
   const fetchRepositories = async () => {
     const root = await ensureRoot(); if (!root) return;
@@ -83,9 +85,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   register('universalGitManager.gitFetch', (item: RepoItem) => confirmGit(item.repository, ['fetch'], 'Git Fetch')); register('universalGitManager.gitPull', (item: RepoItem) => confirmGit(item.repository, ['pull'], 'Git Pull'));
   // A new installation has no root configured. Prompt when its view first activates so
   // discovery is based on the user's own repository folder rather than a hardcoded path.
-  if (!getRoot()) {
-    await configureRoot();
-    if (getRoot()) await fetchRepositories(); else refreshViews();
+  if (!context.globalState.get<boolean>(STATE_ROOT_PROMPTED, false)) {
+    const configured = await configureRoot();
+    if (configured) await context.globalState.update(STATE_ROOT_PROMPTED, true);
+    if (configured && getRoot()) await fetchRepositories(); else refreshViews();
+  } else if (!getRoot()) {
+    if (await configureRoot()) await fetchRepositories(); else refreshViews();
   } else if (vscode.workspace.getConfiguration('universalGitManager').get<boolean>('autoDiscoverOnStartup', false)) await fetchRepositories(); else refreshViews();
 }
 export function deactivate(): void {}

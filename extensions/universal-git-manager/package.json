@@ -2,7 +2,7 @@
   "name": "universal-git-repository-manager",
   "displayName": "Universal Git Repository Manager",
   "description": "Browse, edit, and manage selected external Git repositories from a dedicated VS Code sidebar.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "mbahau",
   "license": "MIT",
   "engines": { "vscode": "^1.90.0" },
